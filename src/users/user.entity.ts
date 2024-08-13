@@ -1,6 +1,6 @@
 import { Exclude, Expose } from 'class-transformer';
-import { BaseEntity } from '../../config/base.entity';
-import { ROLES } from '../../constants/roles';
+import { BaseEntity } from '../config/base.entity';
+import { ROLES } from '../constants/roles';
 import { Column, Entity } from 'typeorm';
 import { PaginateConfig } from 'nestjs-paginate';
 
@@ -32,6 +32,7 @@ export const USER_PAGINATE_CONFIG: PaginateConfig<User> = {
     'deletedAt',
     'username',
     'email',
+    'phoneNumber',
     'role',
   ],
   nullSort: 'last',
@@ -43,6 +44,7 @@ export const USER_PAGINATE_CONFIG: PaginateConfig<User> = {
     'deletedAt',
     'username',
     'email',
+    'phoneNumber',
     'role',
   ],
 };

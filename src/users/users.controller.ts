@@ -9,15 +9,15 @@ import {
   Logger,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UpdateUserDTO, UserDTO } from './dto/user.dto';
+import { UpdateUserDTO, UserDTO } from './user.dto';
 import {
   ApiOkPaginatedResponse,
   ApiPaginationQuery,
   Paginate,
   PaginateQuery,
 } from 'nestjs-paginate';
-import { User, USER_PAGINATE_CONFIG } from './entities/user.entity';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { User, USER_PAGINATE_CONFIG } from '.';
 
 @ApiBearerAuth()
 @ApiTags('USERS')
