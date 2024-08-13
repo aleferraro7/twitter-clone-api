@@ -28,43 +28,11 @@ export class UserDTO {
   email: string;
 
   @ApiProperty({
-    description: 'User password',
-    example: '123456',
+    description: 'Phone number',
+    example: '12345678',
     required: true,
   })
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(6)
-  password: string;
-
-  @ApiProperty({
-    description: 'User role',
-    example: 'USER',
-    required: true,
-  })
-  @IsNotEmpty()
-  @IsEnum(ROLES)
-  role: ROLES;
-}
-
-export class CreateUserDTO {
-  @ApiProperty({
-    description: 'Username',
-    example: 'John23',
-    required: true,
-  })
-  @IsString()
-  @IsNotEmpty()
-  username: string;
-
-  @ApiProperty({
-    description: 'User mail',
-    example: 'johndoe@mail.com',
-    required: true,
-  })
-  @IsEmail()
-  @IsNotEmpty()
-  email: string;
+  phoneNumber: string;
 
   @ApiProperty({
     description: 'User password',
