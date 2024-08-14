@@ -22,6 +22,12 @@ export class AuthService {
         parseInt(configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')),
     );
 
+    const expiresRefreshToken = new Date();
+    expiresRefreshToken.setMilliseconds(
+      expiresRefreshToken.getTime() +
+        parseInt(configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME')),
+    );
+
     const tokenPayload: TokenPayload = {
       userId: user.id,
     };
@@ -31,10 +37,27 @@ export class AuthService {
       expiresIn: `${configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')}ms`,
     });
 
+    const refreshToken = this.jwtService.sign(tokenPayload, {
+      secret: configService.get('JWT_REFRESH_TOKEN_SECRET'),
+      expiresIn: `${configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME')}ms`,
+    });
+
+    const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+
+    await this.usersService.update(user.id, {
+      refreshToken: hashedRefreshToken,
+    });
+
     response.cookie('Authentication', accessToken, {
       httpOnly: true,
       secure: true,
       expires: expiresAccessToken,
+    });
+
+    response.cookie('Refresh', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      expires: expiresRefreshToken,
     });
   }
 
@@ -44,6 +67,25 @@ export class AuthService {
       const authenticated = await bcrypt.compare(password, user.password);
       if (!authenticated) {
         throw new UnauthorizedException('Invalid credentials');
+      }
+      return user;
+    } catch (e) {
+      throw new UnauthorizedException();
+    }
+  }
+
+  public async verifyAsyncUserRefreshToken(
+    refreshToken: string,
+    userId: number,
+  ) {
+    try {
+      const user = await this.usersService.findOneById(userId);
+      const authenticated = await bcrypt.compare(
+        refreshToken,
+        user.refreshToken,
+      );
+      if (!authenticated) {
+        throw new UnauthorizedException('Invalid refreshToken');
       }
       return user;
     } catch (e) {
