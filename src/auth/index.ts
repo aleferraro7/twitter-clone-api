@@ -5,3 +5,5 @@ export * from './current-user.decorator';
 export * from './guards/local-auth.guard';
 export * from './strategies/local.strategy';
 export * from './token-payload.interface';
+export * from './strategies/jwt.strategy';
+export * from './guards/jwt-auth.guard';

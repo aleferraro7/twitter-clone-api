@@ -4,7 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
-import { TokenPayload } from '.';
+import { TokenPayload } from './token-payload.interface';
 
 const configService = new ConfigService();
 
@@ -19,7 +19,7 @@ export class AuthService {
     const expiresAccessToken = new Date();
     expiresAccessToken.setMilliseconds(
       expiresAccessToken.getTime() +
-        parseInt(configService.get('JWT_EXPIRATION_TIME')),
+        parseInt(configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')),
     );
 
     const tokenPayload: TokenPayload = {
@@ -27,8 +27,8 @@ export class AuthService {
     };
 
     const accessToken = this.jwtService.sign(tokenPayload, {
-      secret: configService.get('JWT_SECRET'),
-      expiresIn: `${configService.get('JWT_EXPIRATION_TIME')}ms`,
+      secret: configService.get('JWT_ACCESS_TOKEN_SECRET'),
+      expiresIn: `${configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')}ms`,
     });
 
     response.cookie('Authentication', accessToken, {
