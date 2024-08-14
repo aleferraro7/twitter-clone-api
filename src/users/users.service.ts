@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { BaseService } from 'src/config/base.service';
-import { User } from './entities/user.entity';
+import { User } from './user.entity';
 import { ErrorManager } from 'src/utils/error.manager';
 import { UsersRepository } from './users.repository';
-import { UserDTO } from './dto/user.dto';
+import { UserDTO } from './user.dto';
 
 @Injectable()
 export class UsersService extends BaseService<User> {
