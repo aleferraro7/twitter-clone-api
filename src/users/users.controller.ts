@@ -16,10 +16,10 @@ import {
   Paginate,
   PaginateQuery,
 } from 'nestjs-paginate';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { User, USER_PAGINATE_CONFIG } from '.';
 
-@ApiBearerAuth()
+// @ApiBearerAuth()
 @ApiTags('USERS')
 @Controller('users')
 export class UsersController {

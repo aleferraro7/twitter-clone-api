@@ -46,7 +46,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
-    .addBearerAuth()
+    // .addBearerAuth()
     .setTitle('Twitter Clone API')
     .setDescription('Twitter Clone API')
     .setVersion('1.0')

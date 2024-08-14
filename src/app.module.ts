@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSourceConfig } from './config/data.source';
 import { UsersModule } from './users/users.module';
 import { TweetsModule } from './tweets/tweets.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { TweetsModule } from './tweets/tweets.module';
     TypeOrmModule.forRoot({ ...DataSourceConfig }),
     UsersModule,
     TweetsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService, Logger],
