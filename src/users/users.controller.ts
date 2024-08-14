@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Logger,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDTO, UserDTO } from './user.dto';
@@ -18,6 +19,8 @@ import {
 } from 'nestjs-paginate';
 import { ApiTags } from '@nestjs/swagger';
 import { User, USER_PAGINATE_CONFIG } from '.';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { CurrentUser } from 'src/auth/current-user.decorator';
 
 // @ApiBearerAuth()
 @ApiTags('USERS')
@@ -33,11 +36,20 @@ export class UsersController {
     return this.usersService.register(createUserDto);
   }
 
+  // @Get()
+  // @ApiOkPaginatedResponse(User, USER_PAGINATE_CONFIG)
+  // @ApiPaginationQuery(USER_PAGINATE_CONFIG)
+  // async findAll(@Paginate() query: PaginateQuery) {
+  //   return await this.usersService.findAll(query);
+  // }
+
   @Get()
   @ApiOkPaginatedResponse(User, USER_PAGINATE_CONFIG)
   @ApiPaginationQuery(USER_PAGINATE_CONFIG)
-  async findAll(@Paginate() query: PaginateQuery) {
-    return await this.usersService.findAll(query);
+  @UseGuards(JwtAuthGuard)
+  async getUsers(@CurrentUser() user: User, @Paginate() query: PaginateQuery) {
+    console.log({ user });
+    return this.usersService.findAll(query);
   }
 
   @Get(':id')
