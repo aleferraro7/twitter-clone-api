@@ -1,16 +1,23 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  Res,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { User, UsersService } from 'src/users';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
-import { TokenPayload } from './token-payload.interface';
+import { TokenPayload } from './interfaces/token-payload.interface';
 
 const configService = new ConfigService();
 
 @Injectable()
 export class AuthService {
   constructor(
+    @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
   ) {}
@@ -30,6 +37,7 @@ export class AuthService {
 
     const tokenPayload: TokenPayload = {
       userId: user.id,
+      role: user.role,
     };
 
     const accessToken = this.jwtService.sign(tokenPayload, {
@@ -41,6 +49,8 @@ export class AuthService {
       secret: configService.get('JWT_REFRESH_TOKEN_SECRET'),
       expiresIn: `${configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME')}ms`,
     });
+
+    console.log({ accessToken, refreshToken });
 
     const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
 
@@ -91,5 +101,11 @@ export class AuthService {
     } catch (e) {
       throw new UnauthorizedException();
     }
+  }
+
+  async logOut(@Res({ passthrough: true }) res) {
+    res.cookie('Authentication', '', { expires: new Date(Date.now()) });
+    res.cookie('Refresh', '', { expires: new Date(Date.now()) });
+    return {};
   }
 }

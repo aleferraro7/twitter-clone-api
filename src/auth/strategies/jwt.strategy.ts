@@ -2,9 +2,9 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { UsersService } from 'src/users';
 import { Injectable } from '@nestjs/common';
-import { TokenPayload } from '../token-payload.interface';
+import { TokenPayload } from '../interfaces/token-payload.interface';
+import { UsersService } from 'src/users/users.service';
 
 const configService = new ConfigService();
 

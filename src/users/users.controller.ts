@@ -17,12 +17,15 @@ import {
   Paginate,
   PaginateQuery,
 } from 'nestjs-paginate';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { User, USER_PAGINATE_CONFIG } from '.';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { CurrentUser } from 'src/auth/current-user.decorator';
+import { JwtAuthGuard, RolesGuard } from 'src/auth/guards';
+import { CurrentUser, PublicAccess, RolesAccess } from 'src/auth/decorators';
+import { ROLES } from 'src/constants';
 
-// @ApiBearerAuth()
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard, RolesGuard)
+@RolesAccess(ROLES.USER)
 @ApiTags('USERS')
 @Controller('users')
 export class UsersController {
@@ -31,17 +34,11 @@ export class UsersController {
     private readonly logger: Logger,
   ) {}
 
+  @PublicAccess()
   @Post()
   async create(@Body() createUserDto: UserDTO) {
     return this.usersService.register(createUserDto);
   }
-
-  // @Get()
-  // @ApiOkPaginatedResponse(User, USER_PAGINATE_CONFIG)
-  // @ApiPaginationQuery(USER_PAGINATE_CONFIG)
-  // async findAll(@Paginate() query: PaginateQuery) {
-  //   return await this.usersService.findAll(query);
-  // }
 
   @Get()
   @ApiOkPaginatedResponse(User, USER_PAGINATE_CONFIG)
@@ -53,7 +50,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  async findOneById(@Param('id') id: number) {
+  async findOneById(@CurrentUser() user: User, @Param('id') id: number) {
     try {
       return await this.usersService.findOneById(id);
     } catch {
@@ -61,11 +58,13 @@ export class UsersController {
     }
   }
 
+  @RolesAccess(ROLES.ADMIN)
   @Patch(':id')
   async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDTO) {
     return await this.usersService.update(id, updateUserDto);
   }
 
+  @RolesAccess(ROLES.ADMIN)
   @Delete(':id')
   async delete(@Param('id') id: number) {
     return await this.usersService.deleteById(id);

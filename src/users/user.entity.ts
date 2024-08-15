@@ -1,8 +1,8 @@
 import { Exclude, Expose } from 'class-transformer';
 import { BaseEntity } from '../config/base.entity';
-import { ROLES } from '../constants/roles';
 import { Column, Entity } from 'typeorm';
 import { PaginateConfig } from 'nestjs-paginate';
+import { ROLES } from 'src/constants';
 
 @Entity({ name: 'users' })
 export class User extends BaseEntity {
