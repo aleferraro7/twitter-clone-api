@@ -19,6 +19,24 @@ export class UserDTO {
   username: string;
 
   @ApiProperty({
+    description: 'First name',
+    example: 'John',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  firstName: string;
+
+  @ApiProperty({
+    description: 'Last name',
+    example: 'Doe',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  lastName: string;
+
+  @ApiProperty({
     description: 'User mail',
     example: 'johndoe@mail.com',
     required: true,

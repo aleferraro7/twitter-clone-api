@@ -60,6 +60,21 @@ export abstract class BaseService<T> {
     }
   }
 
+  public async findWithRelation(relations: any): Promise<Paginated<T>> {
+    try {
+      const entities = await this.baseRepository.findWithRelations(relations);
+      if (!entities) {
+        throw new ErrorManager({
+          type: 'BAD_REQUEST',
+          message: 'Not found',
+        });
+      }
+      return entities;
+    } catch (e) {
+      throw ErrorManager.createSignatureError(e.message);
+    }
+  }
+
   public async deleteById(id: number): Promise<void> {
     try {
       const entity = await this.baseRepository.findOneById(id);

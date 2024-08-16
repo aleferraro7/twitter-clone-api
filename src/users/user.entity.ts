@@ -14,11 +14,23 @@ export class User extends BaseEntity {
   email: string;
 
   @Column()
+  firstName: string;
+
+  @Column()
+  lastName: string;
+
+  @Column({ unique: true })
   phoneNumber: string;
 
   @Column()
   @Exclude()
   password: string;
+
+  @Column({ default: 0 })
+  followers?: number;
+
+  @Column({ default: 0 })
+  following?: number;
 
   @Column({ nullable: true })
   refreshToken?: string;

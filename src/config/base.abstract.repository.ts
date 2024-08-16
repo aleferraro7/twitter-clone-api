@@ -48,6 +48,10 @@ export abstract class BaseAbstractRepository<T> {
     return paginate(query, this.repository, this.paginatedConfig);
   }
 
+  public async findWithRelations(relations: any): Promise<Paginated<T>> {
+    return paginate(relations, this.repository, this.paginatedConfig);
+  }
+
   public async deleteById(id: number): Promise<void> {
     await this.repository.delete(id);
   }

@@ -7,8 +7,9 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import {
   Tweet,
   TWEET_PAGINATE_CONFIG,
@@ -23,8 +24,13 @@ import {
   PaginateQuery,
 } from 'nestjs-paginate';
 import { ErrorManager } from 'src/utils/error.manager';
+import { JwtAuthGuard, RolesGuard } from 'src/auth/guards';
+import { RolesAccess } from 'src/auth/decorators';
+import { ROLES } from 'src/constants';
 
-// @ApiBearerAuth()
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard, RolesGuard)
+@RolesAccess(ROLES.USER)
 @ApiTags('TWEETS')
 @Controller('tweets')
 export class TweetsController {

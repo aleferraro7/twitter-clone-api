@@ -11,6 +11,8 @@ export interface BaseInterfaceRepository<T> {
 
   findAll(): Promise<T[]>;
 
+  findWithRelations(relations: any): Promise<T[]>;
+
   deleteById(id: number): Promise<void>;
 
   softDeleteById(id: number): Promise<void>;
