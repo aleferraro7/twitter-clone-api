@@ -37,6 +37,9 @@ export class User extends BaseEntity {
 
   @Column({ type: 'enum', enum: ROLES })
   role: ROLES;
+
+  @Column()
+  avatarUrl?: string;
 }
 
 export const USER_PAGINATE_CONFIG: PaginateConfig<User> = {

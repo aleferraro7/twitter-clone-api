@@ -5,7 +5,7 @@ import { Column, Entity } from 'typeorm';
 @Entity({ name: 'tweets' })
 export class Tweet extends BaseEntity {
   @Column()
-  userId: number;
+  userId?: number;
 
   @Column()
   tweetText: string;

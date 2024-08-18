@@ -40,6 +40,7 @@ export class UsersController {
     return this.usersService.register(createUserDto);
   }
 
+  @PublicAccess()
   @Get()
   @ApiOkPaginatedResponse(User, USER_PAGINATE_CONFIG)
   @ApiPaginationQuery(USER_PAGINATE_CONFIG)
@@ -49,6 +50,7 @@ export class UsersController {
     return this.usersService.findAll(query);
   }
 
+  @PublicAccess()
   @Get(':id')
   async findOneById(@CurrentUser() user: User, @Param('id') id: number) {
     try {

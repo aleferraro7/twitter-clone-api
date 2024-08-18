@@ -70,6 +70,15 @@ export class UserDTO {
   @IsNotEmpty()
   @IsEnum(ROLES)
   role: ROLES;
+
+  @ApiProperty({
+    description: 'Avatar of the user',
+    default:
+      'https://img.freepik.com/vector-premium/icono-avatar-masculino-persona-desconocida-o-anonima-icono-perfil-avatar-predeterminado-usuario-redes-sociales-hombre-negocios-silueta-perfil-hombre-aislado-sobre-fondo-blanco-ilustracion-vectorial_735449-122.jpg?w=360',
+    required: true,
+  })
+  @IsNotEmpty()
+  avatarUrl: string;
 }
 
 export class UpdateUserDTO extends PartialType(UserDTO) {}

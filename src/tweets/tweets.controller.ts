@@ -25,8 +25,9 @@ import {
 } from 'nestjs-paginate';
 import { ErrorManager } from 'src/utils/error.manager';
 import { JwtAuthGuard, RolesGuard } from 'src/auth/guards';
-import { RolesAccess } from 'src/auth/decorators';
+import { CurrentUser, PublicAccess, RolesAccess } from 'src/auth/decorators';
 import { ROLES } from 'src/constants';
+import { User } from 'src/users';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -39,11 +40,20 @@ export class TweetsController {
     private readonly logger: Logger,
   ) {}
 
+  // @Post()
+  // async create(@Body() tweetDto: TweetDTO) {
+  //   return this.tweetsService.create(tweetDto);
+  // }
+
   @Post()
-  async create(@Body() tweetDto: TweetDTO) {
-    return this.tweetsService.create(tweetDto);
+  async create(@CurrentUser() user: User, @Body() tweetDto: TweetDTO) {
+    return this.tweetsService.create({
+      ...tweetDto,
+      userId: user.id,
+    });
   }
 
+  @PublicAccess()
   @Get()
   @ApiOkPaginatedResponse(Tweet, TWEET_PAGINATE_CONFIG)
   @ApiPaginationQuery(TWEET_PAGINATE_CONFIG)
@@ -51,6 +61,7 @@ export class TweetsController {
     return await this.tweetsService.findAll(query);
   }
 
+  @PublicAccess()
   @Get(':id')
   async findOneById(@Param('id') id: number) {
     try {
