@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { BaseService } from 'src/config/base.service';
-import { Tweet, TweetsRepository } from '.';
+import { Tweet, TweetDTO, TweetsRepository } from '.';
 import { Paginated } from 'nestjs-paginate';
 import { ErrorManager } from 'src/utils/error.manager';
+import { User } from 'src/users';
 
 @Injectable()
 export class TweetsService extends BaseService<Tweet> {
@@ -23,5 +24,14 @@ export class TweetsService extends BaseService<Tweet> {
     } catch (e) {
       throw ErrorManager.createSignatureError(e.message);
     }
+  }
+
+  public async createTweet(user: User, data: TweetDTO): Promise<Tweet> {
+    const tweet = await this.tweetsRepository.create({
+      ...data,
+      userId: user.id,
+    });
+
+    return tweet;
   }
 }

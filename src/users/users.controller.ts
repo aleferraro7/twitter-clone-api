@@ -11,14 +11,9 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDTO, UserDTO } from './user.dto';
-import {
-  ApiOkPaginatedResponse,
-  ApiPaginationQuery,
-  Paginate,
-  PaginateQuery,
-} from 'nestjs-paginate';
+import { Paginate, PaginateQuery } from 'nestjs-paginate';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { User, USER_PAGINATE_CONFIG } from '.';
+import { User } from '.';
 import { JwtAuthGuard, RolesGuard } from 'src/auth/guards';
 import { CurrentUser, PublicAccess, RolesAccess } from 'src/auth/decorators';
 import { ROLES } from 'src/constants';
@@ -29,21 +24,18 @@ import { ROLES } from 'src/constants';
 @ApiTags('USERS')
 @Controller('users')
 export class UsersController {
-  constructor(
-    private readonly usersService: UsersService,
-    private readonly logger: Logger,
-  ) {}
+  private readonly logger = new Logger(UsersController.name);
+  constructor(private readonly usersService: UsersService) {}
 
   @PublicAccess()
   @Post()
   async create(@Body() createUserDto: UserDTO) {
+    this.logger.log('Registrando usuario...');
     return this.usersService.register(createUserDto);
   }
 
   @PublicAccess()
   @Get()
-  @ApiOkPaginatedResponse(User, USER_PAGINATE_CONFIG)
-  @ApiPaginationQuery(USER_PAGINATE_CONFIG)
   @UseGuards(JwtAuthGuard)
   async getUsers(@CurrentUser() user: User, @Paginate() query: PaginateQuery) {
     console.log({ user });

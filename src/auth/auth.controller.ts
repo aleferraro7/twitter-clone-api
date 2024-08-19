@@ -2,6 +2,7 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
+  Logger,
   Post,
   Res,
   UseGuards,
@@ -14,6 +15,7 @@ import { CurrentUser } from './decorators';
 
 @Controller('auth')
 export class AuthController {
+  private readonly logger = new Logger(AuthController.name);
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
@@ -23,7 +25,7 @@ export class AuthController {
     @CurrentUser() user: User,
     @Res({ passthrough: true }) response: Response,
   ) {
-    console.log(user);
+    this.logger.log(user);
     await this.authService.login(user, response);
   }
 

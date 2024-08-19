@@ -10,19 +10,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import {
-  Tweet,
-  TWEET_PAGINATE_CONFIG,
-  TweetDTO,
-  TweetsService,
-  UpdateTweetDTO,
-} from '.';
-import {
-  ApiOkPaginatedResponse,
-  ApiPaginationQuery,
-  Paginate,
-  PaginateQuery,
-} from 'nestjs-paginate';
+import { TweetDTO, TweetsService, UpdateTweetDTO } from '.';
+import { Paginate, PaginateQuery } from 'nestjs-paginate';
 import { ErrorManager } from 'src/utils/error.manager';
 import { JwtAuthGuard, RolesGuard } from 'src/auth/guards';
 import { CurrentUser, PublicAccess, RolesAccess } from 'src/auth/decorators';
@@ -35,10 +24,8 @@ import { User } from 'src/users';
 @ApiTags('TWEETS')
 @Controller('tweets')
 export class TweetsController {
-  constructor(
-    private readonly tweetsService: TweetsService,
-    private readonly logger: Logger,
-  ) {}
+  private readonly logger = new Logger(TweetsController.name);
+  constructor(private readonly tweetsService: TweetsService) {}
 
   // @Post()
   // async create(@Body() tweetDto: TweetDTO) {
@@ -47,16 +34,12 @@ export class TweetsController {
 
   @Post()
   async create(@CurrentUser() user: User, @Body() tweetDto: TweetDTO) {
-    return this.tweetsService.create({
-      ...tweetDto,
-      userId: user.id,
-    });
+    this.logger.log(user);
+    return this.tweetsService.createTweet(user, tweetDto);
   }
 
   @PublicAccess()
   @Get()
-  @ApiOkPaginatedResponse(Tweet, TWEET_PAGINATE_CONFIG)
-  @ApiPaginationQuery(TWEET_PAGINATE_CONFIG)
   async findAll(@Paginate() query: PaginateQuery) {
     return await this.tweetsService.findAll(query);
   }
