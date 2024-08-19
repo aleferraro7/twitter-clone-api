@@ -7,12 +7,9 @@ import {
 } from '@nestjs/common';
 import { User, UsersService } from 'src/users';
 import * as bcrypt from 'bcrypt';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import { TokenPayload } from './interfaces/token-payload.interface';
-
-const configService = new ConfigService();
 
 @Injectable()
 export class AuthService {
@@ -26,13 +23,13 @@ export class AuthService {
     const expiresAccessToken = new Date();
     expiresAccessToken.setMilliseconds(
       expiresAccessToken.getTime() +
-        parseInt(configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')),
+        parseInt(process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME),
     );
 
     const expiresRefreshToken = new Date();
     expiresRefreshToken.setMilliseconds(
       expiresRefreshToken.getTime() +
-        parseInt(configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME')),
+        parseInt(process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME),
     );
 
     const tokenPayload: TokenPayload = {
@@ -41,13 +38,13 @@ export class AuthService {
     };
 
     const accessToken = this.jwtService.sign(tokenPayload, {
-      secret: configService.get('JWT_ACCESS_TOKEN_SECRET'),
-      expiresIn: `${configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')}ms`,
+      secret: process.env.JWT_ACCESS_TOKEN_SECRET,
+      expiresIn: `${process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME}ms`,
     });
 
     const refreshToken = this.jwtService.sign(tokenPayload, {
-      secret: configService.get('JWT_REFRESH_TOKEN_SECRET'),
-      expiresIn: `${configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME')}ms`,
+      secret: process.env.JWT_REFRESH_TOKEN_SECRET,
+      expiresIn: `${process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME}ms`,
     });
 
     console.log({ accessToken, refreshToken });
